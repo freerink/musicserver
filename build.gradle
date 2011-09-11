@@ -1,12 +1,26 @@
-apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'eclipse'
 
 version = '1.0'
+
+mainClassName = 'name.reerink.musicserver.MusicServer'
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	compile 'org.hibernate:hibernate-core:3.6+'
+	compile 'org.springframework:spring-context:3+'
+	compile 'log4j:log4j:1+'
+	
 	testCompile 'junit:junit:4+'
+	
+	runtime 'commons-dbcp:commons-dbcp:1.4+'
+	runtime 'org.springframework:spring-orm:3+'
+	runtime 'org.aspectj:aspectjweaver:1.6+'
+	runtime 'cglib:cglib:2+'
+	runtime 'org.slf4j:slf4j-log4j12:1.6+'
+	runtime 'postgresql:postgresql:9.0-801.jdbc4'
+	runtime 'org.javassist:javassist:3.15+'
 }

@@ -4,6 +4,13 @@ import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+/**
+ * Traverse a directory structure. The traverse method calls onFolder, onFile or
+ * onError where appropriate.
+ * 
+ * @author freerink
+ * 
+ */
 public class Traverser {
 
 	private File dir = null;
@@ -19,6 +26,12 @@ public class Traverser {
 		this.queue.add(dir);
 	}
 
+	/**
+	 * Traverse the structure calling onFolder, onFile or onError on the
+	 * supplied Callback.
+	 * 
+	 * @param c
+	 */
 	public void traverse(Callback c) {
 		File work;
 		while ((work = this.queue.poll()) != null) {
@@ -26,15 +39,16 @@ public class Traverser {
 				File[] files = work.listFiles();
 				for (File file : files) {
 					if (file.isDirectory()) {
-						//System.out.println("Dir: " + file.getPath());
+						// System.out.println("Dir: " + file.getPath());
 						c.onFolder(file);
 						this.queue.add(file);
 					} else {
 						if (file.isFile()) {
-							//System.out.println("File: " + file.getPath());
+							// System.out.println("File: " + file.getPath());
 							c.onFile(file);
 						} else {
-							//System.out.println("Error, what is: " + file.getPath());
+							// System.out.println("Error, what is: " +
+							// file.getPath());
 							c.onError(file);
 						}
 					}
