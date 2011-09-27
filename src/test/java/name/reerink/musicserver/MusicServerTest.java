@@ -13,6 +13,7 @@ public class MusicServerTest {
 		MusicServer musicServer = (MusicServer) ServiceLocator.getService("MusicServer", "musicServer");
 		
 		assertNotNull(musicServer);
+		musicServer.getMusicService().deleteAll();
 		assertEquals(0, musicServer.getMusicService().getArtistCount());
 	}
 }
