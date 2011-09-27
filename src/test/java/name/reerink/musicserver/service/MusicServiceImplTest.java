@@ -1,10 +1,10 @@
 package name.reerink.musicserver.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import name.reerink.musicserver.MusicCallbackImpl;
 import name.reerink.musicserver.MusicServer;
 import name.reerink.musicserver.db.Artist;
 import name.reerink.musicserver.db.Track;
@@ -73,9 +73,20 @@ public class MusicServiceImplTest {
 		assertNotNull(musicServer);
 		musicServer.getMusicService().deleteAll();
 		assertEquals(0, musicServer.getMusicService().getArtistCount());
-		Track track = new Track();
-		track.setName("Pink Floyd");
-		musicServer.getMusicService().addTrack(track);
+		Track track1 = new Track();
+		track1.setName("Pink Floyd");
+		musicServer.getMusicService().addTrack(track1);
 		assertEquals(1, musicServer.getMusicService().getArtistCount());
+		// Adding it again will not do anything
+		musicServer.getMusicService().addTrack(track1);
+		assertEquals(1, musicServer.getMusicService().getArtistCount());
+		Track[] tracks = { track1 };
+		musicServer.getMusicService().addTracks(tracks);
+		assertEquals(1, musicServer.getMusicService().getArtistCount());
+		Track track2 = new Track();
+		track2.setName("Pixies");
+		Track[] moreTracks = { track2, track1 };
+		musicServer.getMusicService().addTracks(moreTracks);
+		assertEquals(2, musicServer.getMusicService().getArtistCount());
 	}
 }
