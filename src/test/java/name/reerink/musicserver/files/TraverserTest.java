@@ -13,7 +13,7 @@ public class TraverserTest {
 	@Test
 	public void testConstructNoDir() {
 		try {
-			new Traverser(new File("build.gradle"));
+			new Traverser().setDirectory(new File("build.gradle"));
 			fail("expected exception");
 		} catch (IllegalArgumentException e) {
 			assertTrue(e.getMessage().startsWith("Not a folder"));
@@ -22,23 +22,19 @@ public class TraverserTest {
 
 	@Test
 	public void testConstructor() {
-		Traverser traverser = new Traverser(new File("."));
+		Traverser traverser = new Traverser();
+		traverser.setDirectory(new File("."));
 		assertNotNull(traverser);
-	}
-
-	@Test
-	public void testShowRoot() {
-		Traverser traverser = new Traverser(new File("."));
-		assertNotNull(traverser);
-		traverser.showRoot();
 	}
 
 	@Test
 	public void testTraverseProjectFolder() {
-		Traverser traverser = new Traverser(new File("."));
+		Traverser traverser = new Traverser();
+		traverser.setDirectory(new File("."));
 		assertNotNull(traverser);
 		CallbackDefaultImpl c = new CallbackDefaultImpl();
-		traverser.traverse(c);
+		traverser.setCallback(c);
+		traverser.traverse();
 		System.out.println(c.toString());
 		assertEquals(0, c.getErrors());
 		assertTrue(c.getFolders() >= 40);
@@ -47,10 +43,12 @@ public class TraverserTest {
 
 	@Test
 	public void testTraverseMusicFolder() {
-		Traverser traverser = new Traverser(new File("/mnt/data/Music"));
+		Traverser traverser = new Traverser();
+		traverser.setDirectory(new File("/mnt/data/Music"));
 		assertNotNull(traverser);
 		CallbackDefaultImpl c = new CallbackDefaultImpl();
-		traverser.traverse(c);
+		traverser.setCallback(c);
+		traverser.traverse();
 		System.out.println(c.toString());
 		assertEquals(0, c.getErrors());
 		assertTrue(c.getFolders() >= 1545);

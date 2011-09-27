@@ -13,26 +13,34 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class Traverser {
 
-	private File dir = null;
-
 	private Queue<File> queue = new ConcurrentLinkedQueue<File>();
 
-	public Traverser(File dir) {
-		if (!dir.isDirectory()) {
+	private Callback callback;
+
+	private File directory;
+	
+	public File getDirectory() {
+		return directory;
+	}
+
+	public Traverser() {
+	}
+
+	public void setDirectory(File directory) {
+		if (!directory.isDirectory()) {
 			throw new IllegalArgumentException("Not a folder: "
-					+ dir.getAbsolutePath());
+					+ directory.getAbsolutePath());
 		}
-		this.dir = dir;
-		this.queue.add(dir);
+		this.directory = directory;
+		this.queue.add(directory);
 	}
 
 	/**
 	 * Traverse the structure calling onFolder, onFile or onError on the
-	 * supplied Callback.
+	 * Callback.
 	 * 
-	 * @param c
 	 */
-	public void traverse(Callback c) {
+	public void traverse() {
 		File work;
 		while ((work = this.queue.poll()) != null) {
 			if (work.isDirectory()) {
@@ -40,16 +48,16 @@ public class Traverser {
 				for (File file : files) {
 					if (file.isDirectory()) {
 						// System.out.println("Dir: " + file.getPath());
-						c.onFolder(file);
+						getCallback().onFolder(file);
 						this.queue.add(file);
 					} else {
 						if (file.isFile()) {
 							// System.out.println("File: " + file.getPath());
-							c.onFile(file);
+							getCallback().onFile(file);
 						} else {
 							// System.out.println("Error, what is: " +
 							// file.getPath());
-							c.onError(file);
+							getCallback().onError(file);
 						}
 					}
 				}
@@ -57,21 +65,12 @@ public class Traverser {
 		}
 	}
 
-	/**
-	 * Show the contents of the root folder.
-	 */
-	public void showRoot() {
-		String[] fileNames = this.dir.list();
-		for (String fileName : fileNames) {
-			File file = new File(fileName);
-			if (file.isDirectory()) {
-				System.out.println("Dir: " + fileName);
-			} else {
-				if (file.isFile()) {
-					System.out.println("File: " + fileName);
-				}
-			}
-		}
+	public void setCallback(Callback callback) {
+		this.callback = callback;
+	}
+
+	public Callback getCallback() {
+		return callback;
 	}
 
 }

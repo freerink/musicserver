@@ -47,9 +47,20 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<bean id="musicServer" class="name.reerink.musicserver.MusicServer">
-		<property name="musicFolderPath" value="/mnt/data/Music" />
+	<bean id="callback" class="name.reerink.musicserver.MusicCallbackImpl">
 		<property name="musicService" ref="musicService" />
+	</bean>
+
+	<bean id="traverser" class="name.reerink.musicserver.files.Traverser">
+		<property name="directory" value="/mnt/data/Music/A" />
+		<property name="callback" ref="callback" />
+	</bean>
+
+
+	<bean id="musicServer" class="name.reerink.musicserver.MusicServer">
+		<!--property name="musicFolderPath" value="/mnt/data/Music/A" />
+		<property name="musicService" ref="musicService" /-->
+		<property name="traverser" ref="traverser" />
 	</bean>
 
 	<bean id="musicService" class="name.reerink.musicserver.service.MusicServiceImpl">
