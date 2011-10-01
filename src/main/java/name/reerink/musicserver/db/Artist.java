@@ -1,8 +1,14 @@
 package name.reerink.musicserver.db;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -12,6 +18,28 @@ import org.hibernate.annotations.GenericGenerator;
 public class Artist {
 	Long id;
 	String name;
+
+	private Set<Album> albums = new HashSet<Album>();
+
+	public void setAlbums(Set<Album> albums) {
+		this.albums = albums;
+	}
+
+	/*
+	 * @OneToMany(cascade=ALL, mappedBy="customer") public Set<Order>
+	 * getOrders() { return orders; }
+	 * 
+	 * In Order class:
+	 * 
+	 * @ManyToOne
+	 * 
+	 * @JoinColumn(name="CUST_ID", nullable=false) public Customer getCustomer()
+	 * { return customer; }
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "artist")
+	public Set<Album> getAlbums() {
+		return albums;
+	}
 
 	public Artist() {
 	}

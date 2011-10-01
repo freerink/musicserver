@@ -3,6 +3,8 @@ package name.reerink.musicserver.db;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -12,6 +14,19 @@ import org.hibernate.annotations.GenericGenerator;
 public class Album {
 	Long id;
 	String name;
+
+	private Artist artist = new Artist();
+
+
+	public void setArtist(Artist artist) {
+		this.artist = artist;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "artist_id", nullable = false)
+	public Artist getArtist() {
+		return artist;
+	}
 
 	@Id
 	@GeneratedValue(generator = "increment")
