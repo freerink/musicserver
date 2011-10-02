@@ -16,8 +16,7 @@ public interface MusicService {
 	void deleteAll();
 
 	List<Artist> findArtist(String name);
-	
-	void addTrack(Track track);
-	
-	void addTracks(Track[] tracks);
+
+	void addTrack(String artist, String album, String title, int trackNumber, Track.Type type);
+
 }

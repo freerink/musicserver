@@ -3,30 +3,39 @@ package name.reerink.musicserver.db;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "track")
+@Table(name = "track", uniqueConstraints = { @UniqueConstraint(columnNames = { "album_id", "number" }) })
 public class Track {
 	Long id;
 	int number;
 	String name;
 	String path;
 	// Music file type, i.e. ogg, flac, mp3
-	String type;
+	public enum Type {
+		UNKNOWN, OGG, FLAC, MP3, WMA
+	}
+	
+	private Type type;
+
+	private Album album = new Album();
 
 	public Track() {
 	}
 
-	public Track(int number, String name, String path, String type) {
+/*	public Track(int number, String name, String path) {
 		this.number = number;
 		this.name = new String(name);
 		this.path = new String(path);
 		this.type = new String(type);
 	}
-
+*/
 	@Id
 	@GeneratedValue(generator = "increment")
 	@GenericGenerator(name = "increment", strategy = "increment")
@@ -63,12 +72,22 @@ public class Track {
 		this.path = path;
 	}
 
-	public String getType() {
-		return type;
+	public void setAlbum(Album album) {
+		this.album = album;
 	}
 
-	public void setType(String type) {
+	@ManyToOne
+	@JoinColumn(name = "album_id", nullable = false)
+	public Album getAlbum() {
+		return album;
+	}
+
+	public void setType(Type type) {
 		this.type = type;
+	}
+
+	public Type getType() {
+		return type;
 	}
 
 }

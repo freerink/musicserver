@@ -7,10 +7,11 @@ import java.util.List;
 
 import name.reerink.musicserver.MusicServer;
 import name.reerink.musicserver.db.Artist;
-import name.reerink.musicserver.db.Track;
+import name.reerink.musicserver.db.Track.Type;
 import name.reerink.musicserver.misc.ServiceLocator;
 
 import org.junit.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 
 public class MusicServiceImplTest {
 
@@ -73,20 +74,22 @@ public class MusicServiceImplTest {
 		assertNotNull(musicServer);
 		musicServer.getMusicService().deleteAll();
 		assertEquals(0, musicServer.getMusicService().getArtistCount());
-		Track track1 = new Track();
-		track1.setName("Pink Floyd");
-		musicServer.getMusicService().addTrack(track1);
-		assertEquals(1, musicServer.getMusicService().getArtistCount());
-		// Adding it again will not do anything
-		musicServer.getMusicService().addTrack(track1);
-		assertEquals(1, musicServer.getMusicService().getArtistCount());
-		Track[] tracks = { track1 };
-		musicServer.getMusicService().addTracks(tracks);
-		assertEquals(1, musicServer.getMusicService().getArtistCount());
-		Track track2 = new Track();
-		track2.setName("Pixies");
-		Track[] moreTracks = { track2, track1 };
-		musicServer.getMusicService().addTracks(moreTracks);
-		assertEquals(2, musicServer.getMusicService().getArtistCount());
+
+		String artist = "Pink Floyd";
+		String album1 = "Dark Side of the Moon";
+		musicServer.getMusicService().addTrack(artist, album1,
+				"Speak To Me Breathe", 1, Type.UNKNOWN);
+		musicServer.getMusicService().addTrack(artist, album1, "On The Run", 2,
+				Type.UNKNOWN);
+		musicServer.getMusicService().addTrack(artist, album1, "Time", 3,
+				Type.UNKNOWN);
+		try {
+			musicServer.getMusicService().addTrack(artist, album1,
+					"Another Time", 3, Type.UNKNOWN);
+		} catch (DataIntegrityViolationException e) {
+		}
+		String album2 = "Animals";
+		musicServer.getMusicService().addTrack(artist, album2,
+				"Pigs On The Wing 1", 1, Type.UNKNOWN);
 	}
 }

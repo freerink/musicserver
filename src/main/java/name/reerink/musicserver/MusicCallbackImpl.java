@@ -2,7 +2,8 @@ package name.reerink.musicserver;
 
 import java.io.File;
 
-import name.reerink.musicserver.db.Artist;
+import name.reerink.musicserver.db.Track;
+import name.reerink.musicserver.db.Track.Type;
 import name.reerink.musicserver.files.Callback;
 import name.reerink.musicserver.service.MusicService;
 
@@ -15,14 +16,26 @@ public class MusicCallbackImpl implements Callback {
 	private MusicService musicService;
 
 	public void onFile(File file) {
-		log.info("File: " + file.getName());
-		log.info("Album: " + file.getParentFile().getName());
+		String track = file.getName();
+		log.info("Track: " + track);
+		String trackParts[] = track.split(" ", 2);
+		int trackNumber = Integer.parseInt(trackParts[0]);
+		String title = trackParts[1];
+		Type trackType = Type.UNKNOWN;
+		for (Type type : Track.Type.values()) {
+			// log.info(type.name() + "=" + type.ordinal());
+			if (title.toLowerCase().endsWith(type.name().toLowerCase())) {
+				trackType = type;
+				title = title.substring(0, title.length() - 1
+						- type.name().length());
+			}
+		}
+		String albumName = file.getParentFile().getName();
+		log.info("Album: " + albumName);
 		String artistName = file.getParentFile().getParentFile().getName();
 		log.info("Artist: " + artistName);
-		if (getMusicService().findArtist(artistName).size() == 0) {
-			Artist artist = new Artist(artistName);
-			getMusicService().addArtist(artist);
-		}
+		getMusicService().addTrack(artistName, albumName, title, trackNumber,
+				trackType);
 	}
 
 	public void onFolder(File dir) {
