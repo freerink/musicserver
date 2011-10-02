@@ -15,35 +15,57 @@ public class MusicCallbackImpl implements Callback {
 
 	private MusicService musicService;
 
+	private long fileCount = 0;
+
+	public String toString() {
+		return "fileCount: " + fileCount;
+	}
+
 	public void onFile(File file) {
+		String artistName = file.getParentFile().getParentFile().getName();
+		log.debug("Artist: " + artistName);
+		String albumName = file.getParentFile().getName();
+		log.debug("Album: " + albumName);
 		String track = file.getName();
-		log.info("Track: " + track);
+		log.debug("Track: " + track);
 		String trackParts[] = track.split(" ", 2);
-		int trackNumber = Integer.parseInt(trackParts[0]);
+		int trackNumber;
+		try {
+			trackNumber = Integer.parseInt(trackParts[0]);
+		} catch (NumberFormatException e) {
+			log.warn("NumberFormatException skipping track: " + track
+					+ " for artist '" + artistName + "' and album '"
+					+ albumName + "'");
+			return;
+		}
 		String title = trackParts[1];
 		Type trackType = Type.UNKNOWN;
 		for (Type type : Track.Type.values()) {
-			// log.info(type.name() + "=" + type.ordinal());
 			if (title.toLowerCase().endsWith(type.name().toLowerCase())) {
 				trackType = type;
 				title = title.substring(0, title.length() - 1
 						- type.name().length());
 			}
 		}
-		String albumName = file.getParentFile().getName();
-		log.info("Album: " + albumName);
-		String artistName = file.getParentFile().getParentFile().getName();
-		log.info("Artist: " + artistName);
-		getMusicService().addTrack(artistName, albumName, title, trackNumber,
-				trackType);
+		if (trackType != Type.UNKNOWN) {
+			try {
+				getMusicService().addTrack(artistName, albumName, title,
+						trackNumber, trackType);
+				fileCount++;
+			} catch (RuntimeException e) {
+				log.warn("Exception adding track '"
+						+ title + "', for artist '" + artistName
+						+ "' and album '" + albumName + "'");
+			}
+		} else {
+			log.info("Skipping unknown file type: " + file.getPath());
+		}
 	}
 
 	public void onFolder(File dir) {
-		// TODO Auto-generated method stub
 	}
 
 	public void onError(File thing) {
-		// TODO Auto-generated method stub
 	}
 
 	public void setMusicService(MusicService musicService) {

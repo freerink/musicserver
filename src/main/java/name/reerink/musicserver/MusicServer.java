@@ -29,9 +29,12 @@ public class MusicServer {
 	 */
 	private void run() {
 		log.info("Music server");
+		getMusicService().deleteAll();
+		log.info(getMusicService().toString());
 		getTraverser().traverse();
 		log.info("Traverse result for '" + getTraverser().getDirectory()
 				+ "': " + getTraverser().getCallback());
+		log.info(getMusicService().toString());
 	}
 
 	public MusicService getMusicService() {

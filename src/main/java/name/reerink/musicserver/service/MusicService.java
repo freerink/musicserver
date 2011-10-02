@@ -13,6 +13,9 @@ public interface MusicService {
 
 	long getArtistCount();
 
+	/**
+	 * Delete all Artists, Albums and Tracks.
+	 */
 	void deleteAll();
 
 	List<Artist> findArtist(String name);

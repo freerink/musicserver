@@ -11,7 +11,6 @@ import name.reerink.musicserver.db.Track.Type;
 import name.reerink.musicserver.misc.ServiceLocator;
 
 import org.junit.Test;
-import org.springframework.dao.DataIntegrityViolationException;
 
 public class MusicServiceImplTest {
 
@@ -86,7 +85,7 @@ public class MusicServiceImplTest {
 		try {
 			musicServer.getMusicService().addTrack(artist, album1,
 					"Another Time", 3, Type.UNKNOWN);
-		} catch (DataIntegrityViolationException e) {
+		} catch (RuntimeException e) {
 		}
 		String album2 = "Animals";
 		musicServer.getMusicService().addTrack(artist, album2,

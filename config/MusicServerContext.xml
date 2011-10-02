@@ -33,7 +33,6 @@
 			</list>
 		</property>
 		<property name="hibernateProperties">
-			<!--value>hibernate.hbm2ddl.auto=update</value -->
 			<props>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 				<prop key="hibernate.show_sql">false</prop>
@@ -52,7 +51,7 @@
 	</bean>
 
 	<bean id="traverser" class="name.reerink.musicserver.files.Traverser">
-		<property name="directory" value="/mnt/data/Music/A" />
+		<property name="directory" value="/mnt/data/Music" />
 		<property name="callback" ref="callback" />
 	</bean>
 

@@ -17,6 +17,24 @@ public class MusicServiceImpl implements MusicService {
 
 	public SessionFactory sessionFactory;
 
+	private long findArtistTime;
+
+	private long saveArtistTime;
+
+	private long findAlbumTime;
+
+	private long saveAlbumTime;
+
+	private long saveCompleteArtistTime;
+
+	public String toString() {
+		return "Times: findArtistTime (" + findArtistTime
+				+ "), saveArtistTime (" + saveArtistTime + "), findAlbumTime ("
+				+ findAlbumTime + "), saveAlbumTime (" + saveAlbumTime
+				+ "), saveCompleteArtistTime (" + saveCompleteArtistTime
+				+ ") millis";
+	}
+
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -77,23 +95,31 @@ public class MusicServiceImpl implements MusicService {
 
 	public void addTrack(String artistName, String albumName,
 			String trackTitle, int trackNumber, Type type) {
+		long time = System.currentTimeMillis();
+
 		Session session = getSessionFactory().getCurrentSession();
 		Artist artist;
 		@SuppressWarnings("unchecked")
 		List<Artist> artists = session
 				.createQuery("from Artist where name = ?")
 				.setString(0, artistName).list();
+		findArtistTime += System.currentTimeMillis() - time;
+		time = System.currentTimeMillis();
 		if (artists.size() > 0) {
 			artist = artists.get(0);
 		} else {
 			artist = new Artist();
 			artist.setName(artistName);
 			session.save(artist);
+			saveArtistTime += System.currentTimeMillis() - time;
+			time = System.currentTimeMillis();
 		}
 		Album album;
 		@SuppressWarnings("unchecked")
 		List<Album> albums = session.createQuery("from Album where name = ?")
 				.setString(0, albumName).list();
+		findAlbumTime += System.currentTimeMillis() - time;
+		time = System.currentTimeMillis();
 		if (albums.size() > 0) {
 			album = albums.get(0);
 		} else {
@@ -101,6 +127,8 @@ public class MusicServiceImpl implements MusicService {
 			album.setArtist(artist);
 			album.setName(albumName);
 			session.save(album);
+			saveAlbumTime += System.currentTimeMillis() - time;
+			time = System.currentTimeMillis();
 		}
 		Track track = new Track();
 		track.setName(trackTitle);
@@ -109,6 +137,7 @@ public class MusicServiceImpl implements MusicService {
 		track.setType(type);
 		album.getTracks().add(track);
 		session.save(artist);
+		saveCompleteArtistTime += System.currentTimeMillis() - time;
 	}
 
 }
